@@ -4,16 +4,19 @@ public class AlarmInformation {
 
     private int hour;
     private int minute;
+    private Boolean wasActivated;
 
     public AlarmInformation() {
         this.hour = 0;
         this.minute = 0;
+        this.wasActivated=Boolean.FALSE;
 
     }
 
     public AlarmInformation(int hour, int minute) {
         this.hour = hour;
         this.minute = minute;
+        this.wasActivated = Boolean.FALSE;
     }
 
     public int getHour() {
@@ -32,6 +35,13 @@ public class AlarmInformation {
         this.minute = minute;
     }
 
+    public Boolean getWasActivated() {
+        return wasActivated;
+    }
+
+    public void setWasActivated(Boolean wasActivated) {
+        this.wasActivated = wasActivated;
+    }
 
     @Override
     public String toString() {

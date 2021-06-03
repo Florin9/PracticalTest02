@@ -94,25 +94,31 @@ public class CommunicationThread extends Thread {
                 if(alarmInformation == null){
                     result = "none";
                 } else {
-                    String TIME_SERVER = "utcnist.colorado.edu";
-                    NTPUDPClient timeClient = new NTPUDPClient();
-                    InetAddress inetAddress = InetAddress.getByName(TIME_SERVER);
-                    TimeInfo timeInfo = timeClient.getTime(inetAddress);
-                    //long returnTime = timeInfo.getReturnTime();   //local device time
-                    long returnTime = timeInfo.getMessage().getTransmitTimeStamp().getTime();   //server time
+                    if(!alarmInformation.getWasActivated()) {
+                        String TIME_SERVER = "utcnist.colorado.edu";
+                        NTPUDPClient timeClient = new NTPUDPClient();
+                        InetAddress inetAddress = InetAddress.getByName(TIME_SERVER);
+                        TimeInfo timeInfo = timeClient.getTime(inetAddress);
+                        //long returnTime = timeInfo.getReturnTime();   //local device time
+                        long returnTime = timeInfo.getMessage().getTransmitTimeStamp().getTime();   //server time
 
-                    Date time = new Date(returnTime);
-                    Log.e("NTP time", "Time from " + TIME_SERVER + ": " + time);
-                    int hour = time.getHours();
-                    int minute = time.getMinutes();
-                    Log.e("NTP time", "hour " + hour + ": " + minute);
+                        Date time = new Date(returnTime);
+                        Log.e("NTP time", "Time from " + TIME_SERVER + ": " + time);
+                        int hour = time.getHours();
+                        int minute = time.getMinutes();
+                        Log.e("NTP time", "hour " + hour + ": " + minute);
 
-                    if(hour < alarmInformation.getHour()){
-                        result = "inactive";
-                    } else if(hour > alarmInformation.getHour()){
-                        result = "active";
-                    } else if(minute < alarmInformation.getMinute()){
-                        result = "inactive";
+                        if (hour < alarmInformation.getHour()) {
+                            result = "inactive";
+                        } else if (hour > alarmInformation.getHour()) {
+                            result = "active";
+                            alarmInformation.setWasActivated(Boolean.TRUE);
+                        } else if (minute < alarmInformation.getMinute()) {
+                            result = "inactive";
+                        } else {
+                            result = "active";
+                            alarmInformation.setWasActivated(Boolean.TRUE);
+                        }
                     } else {
                         result = "active";
                     }
